@@ -1,0 +1,17 @@
+1. Create 2 new repository, 1 for the backend and 1 for the frontend of the application.
+2. Create a project folder on your local computer name it same as the frontend repository.
+3. Go to your projet folder.
+4. Create a README.md file:
+     echo "# <repository-name>" >> README.md
+5. Initialize the repository:
+     git init
+6. Add the remote repository:
+     git remote add origin <repository-url>
+7. Add the changes:
+     git add .
+8. Set your identity:
+     git config --global user.email "you@example.com"
+     git config --global user.name "Your Name"
+9. Commit the changes:
+     git commit -m "first commit"
+10. 
