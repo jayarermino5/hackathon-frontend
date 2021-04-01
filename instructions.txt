@@ -2,32 +2,254 @@
 2. Create a project folder on your local computer name it same as the frontend repository.
 3. Go to your projet folder.
 4. Create a README.md file:
+
      echo "# <repository-name>" >> README.md
+
 5. Initialize the repository:
+
      git init
+
 6. Add the remote repository:
+
      git remote add origin <repository-url>
+
 7. Add the changes:
+
      git add .
+
 8. Set your identity:
+
      git config --global user.email "you@example.com"
      git config --global user.name "Your Name"
+
 9. Commit the changes:
+
      git commit -m "first commit"
      git branch -M main
+
 10. Push your commit:
+
      git push -u origin main
+
 11. Check nodejs on your local computer:
+
      npm --version
 
 Let's create the backend first.
 
 12. Create a react application:
+
      npx create-react-app hackathon-app
+
 13. Go to the created react app and delete the README.md.
 14. Move all the files outside the react app folder and delete the ract app folder which is now empty.
-
 Note: Don't forget to move the hidden files.
 
 15. Commit your changes and push.
 
+Let's create our mongodb database.
+
+16. Create a mongodb account using a free pricing, login with your google account. (account.mongodb.com)
+17. Create a cluster. There is only 1 free cluster on MongoDB Atlas with 512MB of data storage.
+18. On your local repository folder, create a backend folder and go inside it.
+     
+     mkdir backend
+     cd backend
+
+19. Initialize a package.json.
+
+     npm init -y
+
+20. Add the backend to the .gitignore file. Insert the codes below.
+
+     # backend
+     /backend
+
+21. On Atlas, create a database/collection and a table/document.
+22. Add a database access.
+23. Add a network acces.
+24. Install the following packages for backend.
+
+     npm install express cors mongoose dotenv
+
+25. Create a server.js file.
+
+     touch server.js
+
+26. Insert the codes below to server.js:
+
+     const express = require('express');
+     const cors = require('cors');
+     const mongoose = require('mongoose');
+
+     require('dotenv').config();
+
+     const app = express();
+     const port = process.env.PORT || 5000;
+
+     // middleware
+     app.use(cors());
+     app.use(express.json());
+
+     app.listen(port, ()=> {
+          console.log(`Server is running in port : ${port}`);
+     })
+
+27. Run the server:
+
+     node server
+
+28. Install nodemon:
+
+     sudo npm install nodemon -g
+     nodemon server
+
+Note: if it doesn't work. follow this command and run nodemon again:
+
+     sudo pkill -f node
+
+29. Create a .env file:
+
+     touch .env
+
+30. Go to Atlas and then click connect, click 'Connect your application' and copy the connection string.
+31. On your .env file, create a variable and paste the connection string:
+Note: don't forget to change the password and database/collection name.
+
+32. Add this codes after the middleware on server.js:
+
+     // mongodb connection
+     const uri = process.env.ATLAS_URI;
+     mongoose.connect(uri, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true});
+
+     const connection = mongoose.connection;
+     connection.once('open', ()=> {
+          console.log("MongoDB database connection is established.");
+     });
+
+33. Now we're done with our server, we will create our models and routes. Create 2 new folders under the backend folder.
+     
+     mkdir models
+     mkdir routes
+
+34. So let's create the model schema or blueprint of data.
+     
+     touch ./models/health.model.js
+
+35. Insert the codes below to the health.model.js:
+
+     const mongoose = require('mongoose');
+
+     const Schema = mongoose.Schema;
+
+     const healthSchema = new Schema({
+          fullname: {
+               type: String,
+               required: true,
+               trim: true
+          },
+          temperature: {
+          type: Number,
+          required: true,
+          trim: true
+          },
+          email: {
+          type: String,
+          required: true,
+          trim: true
+          },
+          phonenumber: {
+          type: String,
+          required: true,
+          trim: true
+          },
+     
+     }, {
+          timestamps: true
+     });
+
+     const Health = mongoose.model('health', healthSchema);
+
+     module.exports = Health;
+
+36. Now, we will create a route on the routes folder:
+
+     touch ./routes/health.js
+
+37. Insert the codes below to health.js file:
+
+     const router = require('express').Router();
+     let Health = require('../models/health.model');
+
+     // home
+     router.route('/').get((req, res)=> {
+
+     Health.find()
+          .then(health => res.json(health))
+          .catch(err => res.status(400).json('Error :' + err));
+
+     });
+
+     // add
+     router.route('/add').post((req, res)=> {
+
+     const fullname = req.body.fullname;
+     const temperature = req.body.temperature;
+     const email = req.body.email;
+     const phonenumber = req.body.phonenumber;
+
+     const newHealthDeclaration = new Health({fullname, temperature, email, phonenumber});
+
+     newHealthDeclaration.save()
+          .then(health => res.json('New Record Added!'))
+          .catch(err => res.status(400).json('Error :' + err));
+
+     });
+
+
+     // details
+     router.route('/:id').get((req, res)=> {
+     Health.findById(req.params.id)
+     .then(health => res.json(health))
+     .catch(err => res.status(400).json('Error: '+ err));
+     });
+
+     // delete
+     router.route('/:id').delete((req, res)=> {
+     Health.findByIdAndDelete(req.params.id)
+     .then(health => res.json('Record was deleted.'))
+     .catch(err => res.status(400).json('Error: '+ err));
+     });
+
+     // update
+
+     router.route('/update/:id').post((req, res)=> {
+
+     Health.findById((req.params.id))
+     .then(health => {
+          
+          health.fullname = req.body.fullname;
+          health.temperature = req.body.temperature;
+          health.email = req.body.email;
+          health.phonenumber = req.body.phonenumber;
+          
+          health.save()
+               .then(() => res.json('Record was updated!'))
+               .catch(err => res.status(400).json('Error :' + err));
+     })
+     .catch(err => res.status(400).json('Error: '+ err));
+
+     });
+
+     module.exports = router;
+
+38. Add the HealthRouter below the mongoose required on server.js:
+
+     const HealthRouter = require('./routes/health');
+
+39. Add the router before the app listening on server.js:
+
+     app.use('/health', HealthRouter);
+
+And finally we have a local server. Now let's try to test the server using Postman.
+But before that, don't forget to commit and push your changes.
