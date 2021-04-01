@@ -251,5 +251,22 @@ Note: don't forget to change the password and database/collection name.
 
      app.use('/health', HealthRouter);
 
-And finally we have a local server. Now let's try to test the server using Postman.
-But before that, don't forget to commit and push your changes.
+And finally we have a local server. Don't forget to commit and push your changes.
+Also, create a new repository for the backend and move the backend files from the frontend folder to backend folder. Commit and push.
+Now, let's test our backend using Postman.
+Open Postman. (postman.com) and sign in using your google account.
+
+40. Click new. Then change the request to POST. type the url:
+    
+     http://localhost:5000/health/add
+
+41. Click on Body then Raw and type the json objects or data to be added.
+
+     {
+          "fullname": "Juan Dela Cruz",
+          "temperature": 35.5,
+          "email": "juan@email.com",
+          "phonenumber: "09123456789"
+     }
+
+42. We can also test the GET and DELETE requests as well as the CRUD functionalities.
