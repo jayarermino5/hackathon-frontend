@@ -14,4 +14,20 @@
      git config --global user.name "Your Name"
 9. Commit the changes:
      git commit -m "first commit"
-10. 
+     git branch -M main
+10. Push your commit:
+     git push -u origin main
+11. Check nodejs on your local computer:
+     npm --version
+
+Let's create the backend first.
+
+12. Create a react application:
+     npx create-react-app hackathon-app
+13. Go to the created react app and delete the README.md.
+14. Move all the files outside the react app folder and delete the ract app folder which is now empty.
+
+Note: Don't forget to move the hidden files.
+
+15. Commit your changes and push.
+
