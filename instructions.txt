@@ -270,3 +270,6 @@ Open Postman. (postman.com) and sign in using your google account.
      }
 
 42. We can also test the GET and DELETE requests as well as the CRUD functionalities.
+
+43. Commit and push everything and your ready to deploy your backend.
+
